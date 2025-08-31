@@ -1,0 +1,215 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Mushroom Robotics — quietly helpful robots</title>
+  <meta name="description" content="Human-centered, helpful, and fun autonomy. Quietly helpful robots, in stealth." />
+  <meta name="theme-color" content="#0b0e12" />
+
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-4T1EW610DE"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){ dataLayer.push(arguments); }
+    gtag('js', new Date());
+    gtag('config', 'G-4T1EW610DE');
+  </script>
+
+  <style>
+    :root { --bg:#0b0e12; --fg:#f2f5f7; --muted:#a7b0b7; --accent:#89ffa5; --glass:rgba(255,255,255,.06); }
+    * { box-sizing:border-box }
+    html,body { height:100% }
+    body {
+      margin:0; color:var(--fg);
+      font:16px/1.6 system-ui,-apple-system,Segoe UI,Roboto,Inter,sans-serif;
+      background:radial-gradient(1200px 800px at 10% -10%, #112 0%, #0b0e12 40%, #0b0e12 100%);
+      overflow:hidden; -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility;
+    }
+    canvas#spores { position:fixed; inset:0; z-index:-1 }
+
+    /* centered layout with more vertical space */
+    .wrap { min-height:100%; display:grid; place-items:center; padding:clamp(44px,8vh,96px) clamp(20px,5vw,64px); }
+    .card {
+      width:min(820px, 92vw);
+      padding:clamp(22px,2.8vw,36px);
+      border-radius:18px;
+      background:linear-gradient(to bottom, rgba(255,255,255,.08), rgba(255,255,255,.03));
+      backdrop-filter:saturate(140%) blur(10px);
+      border:1px solid rgba(255,255,255,.12);
+      box-shadow:0 10px 38px rgba(0,0,0,.45);
+    }
+
+    header{display:flex; align-items:center; gap:1rem; margin-bottom:1.6rem}
+    .logo{
+      width:42px; height:42px; border-radius:12px; display:grid; place-items:center;
+      background:var(--glass); border:1px solid rgba(255,255,255,.14);
+      animation:spin 18s linear infinite;
+    }
+    @keyframes spin{from{transform:rotate(0)} to{transform:rotate(360deg)}}
+    @media (prefers-reduced-motion: reduce){ .logo{animation:none} }
+
+    h1{margin:0; font-size:1.32rem; letter-spacing:.3px}
+    .muted{color:var(--muted); font-size:.94rem}
+
+    .hero{
+      margin-top:.25rem; margin-bottom:1.6rem;
+      font-size:clamp(1.7rem,4.8vw,3rem);
+      font-weight:650; letter-spacing:.2px; line-height:1.15;
+      max-width:34ch;
+    }
+
+    /* Tagline with built-in cursor that stays on the SAME line (no flash) */
+    .tagline{
+      position:relative; display:inline;
+      white-space:normal; overflow-wrap:anywhere; text-wrap:balance; hyphens:auto;
+      padding-right:.8ch; /* reserve space so the cursor never triggers a wrap */
+    }
+    .tagline::after{
+      content:"";
+      position:absolute; right:.1ch; bottom:.05em; /* anchors to baseline of the current line */
+      width:2px; height:.9em; background:var(--accent); border-radius:2px;
+      box-shadow:0 0 8px rgba(137,255,165,.85);
+      animation:blink 1s steps(1) infinite;
+    }
+    @keyframes blink{50%{opacity:0}}
+
+    .pills{margin:.8rem 0 0; display:flex; flex-wrap:wrap; gap:.6rem}
+    .pill{
+      display:inline-flex; align-items:center; gap:.45rem;
+      padding:.5rem .85rem; border-radius:999px;
+      background:var(--glass); border:1px solid rgba(255,255,255,.12);
+      color:var(--muted); font-size:.93rem;
+    }
+
+    .cta{display:flex; gap:.7rem; flex-wrap:wrap; margin-top:1.3rem}
+    .btn{
+      appearance:none; border:none; cursor:pointer; text-decoration:none;
+      padding:.95rem 1.1rem; border-radius:14px; font-weight:600;
+      background:linear-gradient(135deg,#1e2b23,#0f1a13); color:var(--fg);
+      border:1px solid rgba(137,255,165,.35)
+    }
+    .btn.secondary{background:transparent; border:1px solid rgba(255,255,255,.16)}
+
+    footer{margin-top:1.6rem; color:var(--muted); font-size:.9rem}
+    .dots{letter-spacing:.2em}
+
+    /* Mobile polish */
+    @media (max-width:640px){
+      .wrap{ padding: max(28px,7vh) max(14px,5vw); }
+      .card{ border-radius:16px; padding:18px }
+      .hero{ font-size:clamp(1.3rem,7.2vw,1.9rem); max-width:26ch }
+      .btn{ width:100% }
+    }
+  </style>
+</head>
+<body>
+  <canvas id="spores" aria-hidden="true"></canvas>
+
+  <div class="wrap" role="main">
+    <div class="card" aria-label="Mushroom Robotics intro">
+      <header>
+        <div class="logo" aria-hidden="true" title="Mushroom Robotics">
+          <svg viewBox="0 0 64 64" width="28" height="28" aria-hidden="true">
+            <defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0" stop-color="#a5ffbf"/><stop offset="1" stop-color="#89ffa5"/></linearGradient></defs>
+            <path d="M32 10c-12 0-20 7-20 13 0 3 3 3 6 3h28c3 0 6 0 6-3 0-6-8-13-20-13z" fill="url(#g)"/>
+            <rect x="27" y="26" width="10" height="16" rx="5" fill="#e6fff0"/>
+            <circle cx="22" cy="20" r="2" fill="#0b0e12"/>
+            <circle cx="32" cy="18" r="2" fill="#0b0e12"/>
+            <circle cx="42" cy="21" r="2" fill="#0b0e12"/>
+          </svg>
+        </div>
+        <div>
+          <h1>Mushroom Robotics</h1>
+          <div class="muted">Quietly helpful robots. In stealth.</div>
+        </div>
+      </header>
+
+      <div class="hero">
+        <span class="tagline" id="tagline" aria-live="polite"></span>
+      </div>
+
+      <div class="pills" aria-label="Company values">
+        <span class="pill">🫶 human-centered</span>
+        <span class="pill">🧰 helpful</span>
+        <span class="pill">🎈 fun</span>
+      </div>
+
+      <div class="cta">
+        <a class="btn" href="mailto:mushroomrobotics@gmail.com?subject=Hi%20from%20GitHub%20Pages">Get in touch</a>
+        <a class="btn secondary" href="https://github.com/mushroom-robotics" target="_blank" rel="noopener">View the tiny README</a>
+      </div>
+
+      <footer><span class="dots">• • •</span> We grow ideas in the dark and ship when they glow.</footer>
+    </div>
+  </div>
+
+  <script>
+    const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    // Stable typewriter: clamps indices (no negative slice flash)
+    const lines = [
+      "Human-centered by default.",
+      "Helpful in real life.",
+      "Actually fun to be around."
+    ];
+    const el = document.getElementById('tagline');
+    let i = 0, j = 0, deleting = false;
+
+    function type() {
+      if (!el) return;
+      const full = lines[i];
+
+      if (prefersReduced) { el.textContent = full; return; }
+
+      const speed = deleting ? 22 : 38;
+
+      if (!deleting) {
+        j = Math.min(j + 1, full.length);
+        el.textContent = full.slice(0, j);
+        if (j === full.length) { deleting = true; setTimeout(type, 900); return; }
+      } else {
+        j = Math.max(j - 1, 0);
+        el.textContent = full.slice(0, j);
+        if (j === 0) { deleting = false; i = (i + 1) % lines.length; setTimeout(type, 350); return; }
+      }
+      setTimeout(type, speed);
+    }
+    type();
+
+    // Spores background (lighter on mobile)
+    const c = document.getElementById('spores');
+    const ctx = c.getContext('2d', { alpha:true });
+    let spores = [];
+
+    function resize(){ c.width = innerWidth; c.height = innerHeight; if (!spores.length) initSpores(); }
+    function initSpores(){
+      const isMobile = /Mobi|Android/i.test(navigator.userAgent);
+      const densityDiv = isMobile ? 30000 : 18000;
+      const maxCount  = isMobile ? 110 : 160;
+      const count = prefersReduced ? 0 : Math.min(maxCount, Math.floor((c.width*c.height)/densityDiv));
+      spores = Array.from({length:count}, () => ({
+        x: Math.random()*c.width, y: Math.random()*c.height,
+        r: Math.random()*1.6 + 0.6, a: Math.random()*0.6 + 0.2,
+        vx:(Math.random()-0.5)*0.15, vy:-(Math.random()*0.35 + 0.15)
+      }));
+    }
+    function step(){
+      if (prefersReduced) return;
+      ctx.clearRect(0,0,c.width,c.height);
+      for (const s of spores){
+        s.x += s.vx; s.y += s.vy;
+        if (s.y < -10) { s.y = c.height + 10; s.x = Math.random()*c.width; }
+        if (s.x < -10) s.x = c.width + 10;
+        if (s.x > c.width + 10) s.x = -10;
+        ctx.globalAlpha = s.a;
+        ctx.beginPath(); ctx.arc(s.x,s.y,s.r,0,Math.PI*2); ctx.fillStyle='#89ffa5'; ctx.fill();
+      }
+      requestAnimationFrame(step);
+    }
+    addEventListener('resize', () => { resize(); initSpores(); });
+    resize(); step();
+  </script>
+</body>
+</html>
